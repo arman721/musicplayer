@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,7 +30,6 @@ class _PlayMusicState extends ConsumerState<PlayMusic> {
   }
 
   @override
-  bool play = true;
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -46,51 +47,52 @@ class _PlayMusicState extends ConsumerState<PlayMusic> {
                 ])),
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Container(
+                Expanded(
+                  flex: 9,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(boxShadow: [
                         BoxShadow(
                             blurRadius: 30,
                             color: Color.fromARGB(255, 1, 44, 79)),
                       ]),
-                      height: 450,
-                      child: Image.asset(
-                        "assets/images/music.jpg",
-                        fit: BoxFit.fill,
-                      )),
+                      child: QueryArtworkWidget(
+                          id: widget.item[ref.watch(indexprovider)].id,
+                          type: ArtworkType.AUDIO),
+                    ),
+                  ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Expanded(
-                      flex: 2,
-                      child: ListTile(
-                        minVerticalPadding: 10,
-                        title: Text(
-                          widget
-                              .item[ref.watch(indexprovider)].displayNameWOExt,
-                          style: TextStyle(color: Colors.white, fontSize: 20),
-                        ),
-                        subtitle: Text(
-                          "${widget.item[ref.watch(indexprovider)].album}",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      )),
+                Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: ListTile(
+                      minVerticalPadding: 10,
+                      title: Text(
+                        widget.item[ref.watch(indexprovider)].displayNameWOExt,
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                      subtitle: Text(
+                        "${widget.item[ref.watch(indexprovider)].album}",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
                 ),
                 Expanded(flex: 2, child: Container()),
                 Expanded(
                     flex: 3,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         ref.watch(loopprovider)
                             ? IconButton(
                                 onPressed: () {
-                                  setState(() {
-                                    ref.read(loopprovider.notifier).update(
-                                          (state) => false,
-                                        );
-                                  });
+                                  ref.read(loopprovider.notifier).update(
+                                        (state) => false,
+                                      );
                                 },
                                 icon: Icon(
                                   Icons.loop,
@@ -100,11 +102,9 @@ class _PlayMusicState extends ConsumerState<PlayMusic> {
                             : IconButton(
                                 icon: Icon(Icons.abc),
                                 onPressed: () {
-                                  setState(() {
-                                    ref.read(loopprovider.notifier).update(
-                                          (state) => true,
-                                        );
-                                  });
+                                  ref.read(loopprovider.notifier).update(
+                                        (state) => true,
+                                      );
                                 },
                               ),
                         IconButton(
@@ -122,12 +122,12 @@ class _PlayMusicState extends ConsumerState<PlayMusic> {
                           color: Colors.white,
                           iconSize: 50,
                         ),
-                        play
+                        ref.watch(playprovider)
                             ? IconButton(
                                 onPressed: () {
-                                  setState(() {
-                                    play = !play;
-                                  });
+                                  ref
+                                      .read(playprovider.notifier)
+                                      .update((state) => false);
                                   widget.audioPlayer.pause();
                                 },
                                 icon: Icon(
@@ -137,9 +137,9 @@ class _PlayMusicState extends ConsumerState<PlayMusic> {
                                 ))
                             : IconButton(
                                 onPressed: () {
-                                  setState(() {
-                                    play = !play;
-                                  });
+                                  ref
+                                      .read(playprovider.notifier)
+                                      .update((state) => true);
                                   widget.audioPlayer.resume();
                                 },
                                 icon: Icon(
@@ -164,6 +164,13 @@ class _PlayMusicState extends ConsumerState<PlayMusic> {
                               color: Colors.white,
                               size: 50,
                             )),
+                        IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                              Icons.shuffle,
+                              color: Colors.white,
+                              size: 35,
+                            ))
                       ],
                     ))
               ],
