@@ -16,19 +16,22 @@ class _MainPageState extends State<MainPage> {
       indexnumber = index;
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    
-    List<Widget> pages = [HomePage(), OnlinePage()];
-    return MaterialApp(home: Scaffold(body: pages[indexnumber],
-    bottomNavigationBar: BottomNavigationBar(currentIndex: indexnumber,
-      onTap:_BottomNavigationBar,
-    
-      items: [
-      BottomNavigationBarItem(icon: Icon(Icons.device_hub),label: "Local Storage"),
-      BottomNavigationBarItem(icon: Icon(Icons.online_prediction),label: "Online")
-    ]),
-    
+    List<Widget> pages = [const HomePage(), const OnlinePage()];
+    return MaterialApp(
+        home: Scaffold(
+      body: pages[indexnumber],
+      bottomNavigationBar: BottomNavigationBar(
+          currentIndex: indexnumber,
+          onTap: _BottomNavigationBar,
+          items: const [
+            BottomNavigationBarItem(
+                icon: Icon(Icons.device_hub), label: "Local Storage"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.online_prediction), label: "Online")
+          ]),
     ));
   }
 }

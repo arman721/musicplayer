@@ -1,14 +1,9 @@
-import 'dart:developer';
-import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:musicplayer/play.dart';
 import 'package:musicplayer/stateprovider.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -19,7 +14,6 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   @override
- 
   bool co = false;
 
   final _audioquery = OnAudioQuery();
@@ -27,13 +21,9 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   int a = 0;
 
-
-
   playsong(String? data) {
     _audioplayer.play(DeviceFileSource(data!));
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -50,18 +40,18 @@ class _HomePageState extends ConsumerState<HomePage> {
             if (item.data == null) {
               print("null");
               return Container(
-                  child: Center(child: CircularProgressIndicator()));
+                  child: const Center(child: CircularProgressIndicator()));
             }
             if (item.data!.isEmpty) {
               print("empty");
-              return Container(child: (Text("No Songs Found")));
+              return Container(child: (const Text("No Songs Found")));
             } else {
               return Column(
                 children: [
                   Expanded(
                     flex: 15,
                     child: Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
@@ -72,29 +62,37 @@ class _HomePageState extends ConsumerState<HomePage> {
                           ])),
                       child: Column(
                         children: [
-                          Expanded(flex: 2,
-                            child: Container(alignment: Alignment.topLeft,
-                              child: Text("Play Your Favourite Song",style: TextStyle(color: Color.fromARGB(222, 17, 17, 17),fontSize: 25),),)),
+                          Expanded(
+                              flex: 2,
+                              child: Container(
+                                alignment: Alignment.topLeft,
+                                child: const Text(
+                                  "Play Your Favourite Song",
+                                  style: TextStyle(
+                                      color: Color.fromARGB(222, 17, 17, 17),
+                                      fontSize: 25),
+                                ),
+                              )),
                           Expanded(
                             flex: 2,
                             child: Container(
                               width: MediaQuery.of(context).size.width,
                               height: 30,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                   color: Color.fromARGB(165, 158, 158, 158),
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(50))),
                               // height: MediaQuery.of(context).size.height,
                               child: Row(
                                 children: [
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 10,
                                   ),
-                                  Container(child: Icon(Icons.search)),
-                                  SizedBox(
+                                  Container(child: const Icon(Icons.search)),
+                                  const SizedBox(
                                     width: 10,
                                   ),
-                                  Text("Search "),
+                                  const Text("Search "),
                                 ],
                               ),
                             ),
@@ -112,15 +110,15 @@ class _HomePageState extends ConsumerState<HomePage> {
                                           return index;
                                         },
                                       );
-                                 
-                                        ref
-                                            .read(playprovider.notifier)
-                                            .update((state) => true);
-                                        ref
-                                            .read(sheetprovider.notifier)
-                                            .update((state) => true);
 
-                                        Navigator.push(
+                                      ref
+                                          .read(playprovider.notifier)
+                                          .update((state) => true);
+                                      ref
+                                          .read(sheetprovider.notifier)
+                                          .update((state) => true);
+
+                                      Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (BuildContext context) =>
@@ -136,12 +134,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                                     },
                                     child: ListTile(
                                       textColor: Colors.white,
-                                      leading: Container(
+                                      leading: SizedBox(
                                           width: 50,
                                           child: QueryArtworkWidget(
                                               id: item.data![index].id,
-                                              type: ArtworkType.AUDIO)
-                                              ),
+                                              type: ArtworkType.AUDIO)),
                                       title: Text(
                                           item.data![index].displayNameWOExt),
                                       subtitle:
@@ -166,86 +163,76 @@ class _HomePageState extends ConsumerState<HomePage> {
                                         index: ref.watch(indexprovider),
                                         audioPlayer: _audioplayer,
                                       ))),
-                          child: Expanded(
-                              flex: 1,
-                              child: Container(
-                                color: Color.fromARGB(255, 86, 51, 146),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                        flex: 2,
-                                        child: QueryArtworkWidget(
-                                              id: item.data![ref.watch(indexprovider)].id,
-                                              type: ArtworkType.AUDIO)
-                                        ),
-                                    Expanded(
-                                      flex: 6,
-                                      child: ListTile(
-                                        textColor: Colors.white,
-                                        title: Text(item
-                                            .data![ref.watch(indexprovider)]
-                                            .title),
-                                        subtitle: Text(
-                                            "${item.data![ref.watch(indexprovider)].album}"),
-                                      ),
-                                    ),
-                                    ref.watch(playprovider)
-                                        ? Expanded(
-                                            flex: 1,
-                                            child: IconButton(
-                                                onPressed: () {
-                                                
-                                                    ref
-                                                        .read(playprovider
-                                                            .notifier)
-                                                        .update(
-                                                            (state) => !state);
-                                                  _audioplayer.pause();
-                                                },
-                                                icon: Icon(
-                                                  Icons.pause,
-                                                  color: Colors.white,
-                                                  size: 35,
-                                                )),
-                                          )
-                                        : Expanded(
-                                            flex: 1,
-                                            child: IconButton(
-                                                onPressed: () {
-                                                    ref
-                                                        .read(playprovider
-                                                            .notifier)
-                                                        .update(
-                                                            (state) => !state);
-                                              
-                                              
-                                                  
-
-                                        
-                                                  _audioplayer.resume();
-                                                },
-                                                icon: Icon(
-                                                  Icons.play_arrow,
-                                                  color: Colors.white,
-                                                  size: 35,
-                                                )),
-                                          ),
-                                    Expanded(
-                                      flex: 1,
-                                      child: IconButton(
-                                          onPressed: () {
-                                            _audioplayer.stop();
-                                            ref.read(sheetprovider.notifier).update((state) => false);
-                                          },
-                                          icon: Icon(
-                                            Icons.cancel_outlined,
-                                            color: Colors.white,
-                                            size: 35,
-                                          )),
-                                    )
-                                  ],
+                          child: Container(
+                            color: const Color.fromARGB(255, 86, 51, 146),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                    flex: 2,
+                                    child: QueryArtworkWidget(
+                                        id: item
+                                            .data![ref.watch(indexprovider)].id,
+                                        type: ArtworkType.AUDIO)),
+                                Expanded(
+                                  flex: 6,
+                                  child: ListTile(
+                                    textColor: Colors.white,
+                                    title: Text(item
+                                        .data![ref.watch(indexprovider)].title),
+                                    subtitle: Text(
+                                        "${item.data![ref.watch(indexprovider)].album}"),
+                                  ),
                                 ),
-                              )),
+                                ref.watch(playprovider)
+                                    ? Expanded(
+                                        flex: 1,
+                                        child: IconButton(
+                                            onPressed: () {
+                                              ref
+                                                  .read(playprovider.notifier)
+                                                  .update((state) => !state);
+                                              _audioplayer.pause();
+                                            },
+                                            icon: const Icon(
+                                              Icons.pause,
+                                              color: Colors.white,
+                                              size: 35,
+                                            )),
+                                      )
+                                    : Expanded(
+                                        flex: 1,
+                                        child: IconButton(
+                                            onPressed: () {
+                                              ref
+                                                  .read(playprovider.notifier)
+                                                  .update((state) => !state);
+
+                                              _audioplayer.resume();
+                                            },
+                                            icon: const Icon(
+                                              Icons.play_arrow,
+                                              color: Colors.white,
+                                              size: 35,
+                                            )),
+                                      ),
+                                Expanded(
+                                  flex: 1,
+                                  child: IconButton(
+                                      onPressed: () {
+                                        _audioplayer.stop();
+                                        ref
+                                            .read(sheetprovider.notifier)
+                                            .update((state) => false);
+                                      },
+                                      icon: const Icon(
+                                        Icons.cancel_outlined,
+                                        color: Colors.white,
+                                        size: 35,
+                                      )),
+                                )
+                              ],
+                            ),
+                          ),
                         )
                       : Expanded(
                           flex: 0,
