@@ -21,7 +21,6 @@ class MusicController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchSongs();
 
     audioPlayer.onPlayerComplete.listen((event) => handleCompletion());
 

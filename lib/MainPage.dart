@@ -1,19 +1,22 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:musicplayer/MusicController.dart';
 import 'package:musicplayer/OnlinePage.dart';
 import 'package:musicplayer/homepage.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
-
   @override
   State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
   @override
+  final MusicController musicController = Get.put(MusicController());
+
   void initState() {
     super.initState();
     requestPermission();
@@ -25,6 +28,7 @@ class _MainPageState extends State<MainPage> {
 
     if (isGranted) {
       log("Audio permission granted");
+      musicController.fetchSongs();
     } else {
       log("Audio permission denied, requesting again...");
       await requestPermission();
